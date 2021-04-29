@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Ceaser Cipher{% endblock %}
+{% block head %}
+{{ super() }}
+    <script>
+        $(document).ready(function () {
+            $(".alert").fadeOut(4000);
+            
+            function encrypt() {
+                $.ajax({
+                    url: "ceaser-cipher/request",
+                    type: "post",
+                    dataType: 'json',
+                    data: { method: "encrypt", text: $("#text-box").val(), shift: $("#key").val()},
+                    success: function (result) {
+                        $("#output-text").text(result.msg);
+                    }
+                });
+            }
+
+            function decrypt() {
+                $.ajax({
+                    url: "ceaser-cipher/request",
+                    type: "post",
+                    dataType: 'json',
+                    data: {method:"decrypt", text: $("#text-box2").val(), shift: $("#key2").val() },
+                    success: function (result) {
+                        $("#output-text2").text(result.msg);
+                    }
+                });
+            }
+            
+            $("#encrypt").click(function () { 
+                if (!$("#text-box").val() || !$("#key").val()) { return; }
+    
+                encrypt()
+            });
+
+            $("#decrypt").click(function () {
+                if (!$("#text-box2").val() || !$("#key2").val()) { return; }
+
+                decrypt()
+            });
+        });
+        
+    </script>
+
+{% endblock %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div id="alert" class=" alert alert-danger">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div>
+        <h2>Ceaser Cipher</h2>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <form id="encrypt-form" onsubmit="return false">
+                <h4>Encrypt</h4>
+                <label for="text-box">Output: </label>
+                <p id="output-text" class="btn-lg card"></p>
+                <label for="text-box">Text to encrypt: </label>
+                <input type="text" id="text-box" name="text-box" value="" required>
+                <label for="key">Key</label>
+                <input type="number" id="key" name="key" value="" min="1" max="25" step="1" required><br>
+                <button id="encrypt" class="btn btn-primary">Encrypt</button>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <form id="decrypt-form"  onsubmit="return false">
+                <h4>Decrypt</h4>
+                <label for="text-box">Output: </label>
+                <p id="output-text2" class="btn-lg card"></p>
+                <label for="text-box">Text to decrypt: </label>
+                <input type="text" id="text-box2" name="text-box" value="" required>
+                <label for="key">Key</label>
+                <input type="number" id="key2" name="key" value="" min="1" max="25" step="1" required><br>
+                <button id="decrypt" class="btn btn-primary">Decrypt</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <a href="/">Go Home</a>
+{% endblock %}

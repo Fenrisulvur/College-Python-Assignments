@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Upload{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+    <h4>Add File</h4>
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <label for="file">File:</label><br>
+        <input type="file" id="file" name="file"  accept=".png" required><br>
+        <input type="submit" value="Submit">
+    </form>
+    <a href="/">Go Home</a>
+    </body>
+    </html>
+{% endblock %}

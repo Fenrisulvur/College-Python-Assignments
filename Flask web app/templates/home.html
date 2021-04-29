@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h4>Home Page</h4>
+            <img src="{{ url_for('static', filename='uploads/uploaded-pic.png') }}" style="width: 20%;" />
+        </div>
+        <div class="card-body">
+            <p>
+                Welcome to my flask webapp. This is a webapp that allows you to play Rock Paper Scissors, Use the ceaser cipher to encrypt or decrypt a message, and modify the site logo above. Click a button below to make use of it.
+            </p>
+        </div>
+        <div class="card-body">
+            <br />
+            <a href="/image-upload" class="btn btn-primary">Modify logo</a>
+            <br />
+            <a href="/ceaser-cipher" class="btn btn-primary">Ceaser Cipher</a>
+            <br />
+            <a href="/rps" class="btn btn-primary">Rock Paper Scissors</a>
+        </div>
+    </div>
+    
+{% endblock %}
+

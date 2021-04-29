@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Rock Paper Scissors{% endblock %}
+{% block head %}
+{{ super() }}
+    <script>
+        $(document).ready(function () {
+            $(".alert").fadeOut(4000);
+
+            var round = 0;
+            var wins = 0;
+            var losses = 0;
+            
+            function play() {
+                $.ajax({
+                    url: "rps/request",
+                    type: "post",
+                    dataType: 'json',
+                    data: {move: $("#move").val()},
+                    success: function (result) {
+                        round+=1;
+                        if (result.winner == "cp")
+                        {
+                            losses+=1;
+                        }
+                        else if (result.winner == "player")
+                        {
+                            wins +=1
+                        }
+                        var msg = "<pre>"+ "Round: " + round + "\nWins: " + wins + "\nLosses: " + losses + "\nWinner: "+ result.winner + "\n" + "Your move:" + result.pmove + "\nComp move: " + result.cpmove+ "</pre>"
+                        $("#output-text").html(msg);
+                    }
+                });
+            }
+            
+            function reset() {
+                round = 0;
+                wins = 0;
+                losses = 0;
+                $("#output-text").html("<pre></pre>");
+            }
+
+            $("#submit-turn").click(function () {
+                play()
+            });
+            $("#reset").click(function () {
+                reset()
+            });
+        });
+        
+    </script>
+
+{% endblock %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div id="alert" class=" alert alert-danger">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div>
+        <h2>Rock Paper Scissors</h2>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <form id="encrypt-form" onsubmit="return false">
+                <h4>Match outcome:</h4>
+                <label for="text-box">Output: </label>
+                <p id="output-text" class="btn-lg card"></p>
+                <label for="move">Choose a move:</label>
+                <select name="move" id="move">
+                    <option value="r">Rock</option>
+                    <option value="p">Paper</option>
+                    <option value="s">Scissors</option>
+                </select>
+                <button id="submit-turn" class="btn btn-primary">Submit Choice</button>
+                <button id="reset" class="btn btn-primary">New game</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <a href="/">Go Home</a>
+{% endblock %}

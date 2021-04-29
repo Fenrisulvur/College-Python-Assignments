@@ -1,0 +1,1 @@
+All of these projects require the codehs JavaScript & brython environment to run properly.
