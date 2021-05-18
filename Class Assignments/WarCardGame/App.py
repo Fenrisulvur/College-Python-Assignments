@@ -5,15 +5,13 @@ Corey Fults
 from guizero import App, Text, PushButton, Window, Box, Picture
 import random
 from deck import Deck, Hand
+
 #---Funcs---#
 imgDir = "./Images/card-pngs/"
 cardBacks = ["red_back","yellow_back","purple_back", "blue_back", "green_back", "gray_back"]
-
 currentDeck = []
-leftHand = []
-rightHand = []
-leftScore = 0
-rightScore = 0
+leftHand, rightHand = [], []
+leftScore, rightScore = 0, 0
 acesHigh = False
 
 #--Choose random card back
@@ -50,10 +48,8 @@ def reset():
     chosenCardBack = random_back()
     update_hands_ui(chosenCardBack, chosenCardBack)
 
-
 #--Update value tracking guis 
 def update_gui():
-    global leftHand, rightHand
     leftCardCount.value = len(leftHand.cards) if type(leftHand) == Hand else 0
     rightCardCount.value = len(rightHand.cards) if type(rightHand) == Hand else 0
     leftScoreUI.value = "P1 Score: "+str(leftScore)
@@ -77,16 +73,13 @@ def clear_round_win_gui():
 
 #--Start a new game
 def start_game():
-    global acesHigh
+    global acesHigh, currentDeck, leftHand, rightHand
     playBut.visible = False
     dealBut.visible = True
-    global currentDeck, leftHand, rightHand
-
     currentDeck = Deck()
     currentDeck.Shuffle()
     players = [Hand(), Hand()]
     currentDeck.Deal(players)
-
     leftHand = players[0]
     rightHand = players[1]
     update_gui()
@@ -94,14 +87,11 @@ def start_game():
 
 #--Display winner and show buttons
 def end_game():
-    global leftScore, rightScore
     gameWindow.info(title="Game Over!", text="Winner - "+("Player 1" if leftScore > rightScore else ("Player 2" if rightScore > leftScore else "Draw" )))
     reset()
-    
-    
+      
 #--Get value of the card for scoring
 def get_card_val(card):
-    global acesHigh
     if card.number in ["J", "Q", "K", "A"]:
         if card.number == "A":
              return 14 if acesHigh else 1
@@ -140,44 +130,30 @@ def deal_round():
 
     if len(leftHand.cards) == 0 or len(rightHand.cards) == 0:
         end_game()
-
-    
+  
 #---Window/App Declaration---#
 appWindow = App(title="War Menu", width=300, height=50)
-
 gameWindow = Window(appWindow,  title="War App", width=500, height=600, layout="grid")
 gameWindow.hide()
 gameWindow.when_closed = show_main
-
 #---Main Window---#
 button = PushButton(appWindow, text="Start Game", width="fill",command=show_game)
-
-
 #---Second Window---#
-
 topBox = Box(gameWindow,width="fill", grid=[0,0])
 topBox2 = Box(gameWindow, width=500, height=50, grid=[0, 1], border=True)
 midBox = Box(gameWindow, width="fill", grid=[0, 2])
 botBox = Box(gameWindow, width=500, height=50, grid=[0, 3], border=True)
 botBox2 = Box(gameWindow, width=500, height=50, grid=[0, 4], border=True)
-
 playBut = PushButton(topBox, text="Play", width="fill", command=start_game, align="left")
 exitBut = PushButton(topBox, text="Exit", width="fill", command=show_main, align="right")
 dealBut = PushButton(topBox, text="Deal", width="fill", command=deal_round, visible=False)
-
 cardLeft = Picture(midBox, image=imgDir+"red_back.png", height=350, width=250, align="left")
 cardRight = Picture(midBox, image=imgDir+"red_back.png", height=350, width=250, align="right")
-
 leftCardCount = Text(topBox2, "",  width=25, height=50, align="left")
 rightCardCount = Text(topBox2, "",   width=25, height=50, align="left")
-
 leftWinUI = Text(botBox, "",  width=25, height=50, align="left")
 rightWinUI = Text(botBox, "",   width=25, height=50, align="left")
-
 leftScoreUI = Text(botBox2, "",  width=25, height=50, align="left")
 rightScoreUI = Text(botBox2, "",   width=25, height=50, align="left")
-
-
-
 #---END---#
 appWindow.display()
